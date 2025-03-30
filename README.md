@@ -23,7 +23,7 @@ Languages used are JavaScript, HTML and CSS.
 
 2. **Create a `.env` file** in the root of your project.
 
-3. **Add your API key to the `.env` file**:
+3. **Add your API key to the `.env` file**: <br />
     You will need a working API key to run this editor. To get your API key, visit the Judge0 CE page on RapidAPI:
     https://rapidapi.com/judge0-official/api/judge0-ce
 
