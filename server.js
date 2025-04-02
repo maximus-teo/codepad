@@ -18,12 +18,12 @@ if (!apiKey) { // debug
     process.exit(1);
 }
 
-app.post('/run-code', (req, res) => {
-    const { source_code, languageId } = req.body;
+app.post('/run-code', async (req, res) => {
+    const { sourceCode, languageId } = req.body;
 
     const apiUrl = "https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=true";
 
-    fetch(apiUrl, {
+    await fetch(apiUrl, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -31,7 +31,7 @@ app.post('/run-code', (req, res) => {
         },
         body: JSON.stringify({
             language_id: languageId,
-            source_code: source_code
+            source_code: sourceCode
         })
     })
     .then(response => response.json())
