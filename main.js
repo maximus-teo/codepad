@@ -94,30 +94,6 @@ require(["vs/editor/editor.main"], function () {
 const backendURL = "https://codepad-sd7b.onrender.com"; // Your backend URL
 
 async function runCode() {
-    /*
-    const code = editor.getValue();
-    const url = `http://localhost:5000/run-code`; // backend port: 5000 (as in .env)
-    
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            source_code: code,
-            languageId: currentLanguageId
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Server Response:", data); // debugging
-        output.innerText = data.stdout || data.stderr || "Error running code."
-    })
-    .catch(error => {
-        console.error("Error sending request:", error); // debugging
-    });
-    */
-
     const code = editor.getValue();
     const response = await fetch(`${backendURL}/run-code`, {
         method: "POST",
@@ -135,11 +111,6 @@ async function runCode() {
     .catch(error => {
         console.error("Error sending request:", error); // debugging
     });
-
-    /*
-    const result = await response.json();
-    document.getElementById("output").innerText = result.stdout || result.stderr || "Error running code.";
-    */
 }
 
 function resizeCode(element) {

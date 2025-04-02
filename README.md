@@ -13,7 +13,11 @@ APIs used are Judge0 CE from RapidAPI and Monaco Editor.
 
 Languages used are JavaScript, HTML and CSS.
 
-## 📌 How to Set Up
+## 🌐 Live Site
+To test out Codepad, visit https://maximus-teo.github.io/codepad
+
+## 📌 How to Run Locally
+Here are the steps to run this program on your machine, with your own API key.
 
 1. **Clone this repository**:
    ```
