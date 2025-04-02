@@ -1,7 +1,7 @@
 process.chdir(__dirname);
 console.log("Running from:", process.cwd());
 
-require('dotenv').config({ path: '../.env' }); // server.js is in src
+require('dotenv').config({ path: './.env' });
 
 const express = require('express');
 const fetch = require('node-fetch');  // node-fetch version 2.x.x
