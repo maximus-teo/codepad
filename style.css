@@ -412,14 +412,6 @@ input[type="text"]:focus, #language:focus {
         position: relative;
         height: auto;
         margin-bottom: 10px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .toolbar::-webkit-scrollbar {
-        display: none;
     }
 
     nav {
