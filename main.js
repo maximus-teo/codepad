@@ -9,27 +9,28 @@ let currentLanguageId;
 
 document.addEventListener('DOMContentLoaded', function () {
     let theme = localStorage.getItem("theme");
+    const root = document.documentElement;
     if (theme === null) { // if theme is unsaved in local storage
         localStorage.setItem("theme", "light"); // light by default
-        document.body.classList.add("light-mode");
-        document.querySelectorAll("body *").forEach(e => {
+        root.classList.add("light-mode");
+        document.querySelectorAll("html *").forEach(e => {
             e.classList.add("light-mode");
         });
         document.getElementById("theme-toggle").checked = false; // false = light mode
     } else { // display the last selected theme
         if (theme === "light") {
-            document.body.classList.remove("dark-mode");
-            document.body.classList.add("light-mode");
-            document.querySelectorAll("body *").forEach(e => {
+            root.classList.remove("dark-mode");
+            root.classList.add("light-mode");
+            document.querySelectorAll("html *").forEach(e => {
                 e.classList.remove("dark-mode");
                 e.classList.add("light-mode");
             });
             document.getElementById("theme-toggle").checked = false; // false = light mode
         }
         else if (theme === "dark") {
-            document.body.classList.remove("light-mode");
-            document.body.classList.add("dark-mode");
-            document.querySelectorAll("body *").forEach(e => {
+            root.classList.remove("light-mode");
+            root.classList.add("dark-mode");
+            document.querySelectorAll("html *").forEach(e => {
                 e.classList.remove("light-mode");
                 e.classList.add("dark-mode");
             });
@@ -48,6 +49,37 @@ document.addEventListener('DOMContentLoaded', function () {
     currentLanguageId = getLanguageId(currentLanguageName);
     mostRecentlyUpdatedCode = localStorage.getItem(currentLanguageName + "_code") || getDefaultCode(currentLanguageName);
     document.getElementById("language").value = currentLanguageName;
+
+    // RESIZABLE DIVIDER
+    const resizer = document.getElementById('resizer');
+    const panelLeft = document.getElementById('editor-container');
+    let isMouseDown = false;
+    
+    resizer.addEventListener('mousedown', onMouseDown);
+    
+    function onMouseDown(e) {
+      isMouseDown = true;
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    }
+    
+    function onMouseMove(e) {
+      if (!isMouseDown) return;
+    
+      const minWidth = 500; // px
+      const maxWidth = window.innerWidth - minWidth;
+      const newWidth = Math.min(Math.max(e.clientX, minWidth), maxWidth);
+    
+      panelLeft.style.flexBasis = `${newWidth}px`;
+    }
+    
+    function onMouseUp() {
+      isMouseDown = false;
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    }
+    
+
 });
 
 // localStorage:
@@ -56,19 +88,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
 let codeFontSize = 14;
 let outputFontSize = 14;
-const MAX_FONT_SIZE = 24;
+const MAX_FONT_SIZE = 36;
 const MIN_FONT_SIZE = 12;
 
 // map name -> id, extension, code
 const mapNameToIdExtensionCode = {
-    "java": [62, "java", "\/\/ Default Java code\npublic class Main {\n\tpublic static void main(String[] args) {\n\t\tSystem.out.println(\"Hello, World!\");\n\t}\n}"],
-    "javascript": [63, "js", "\/\/ Default JavaScript code\nfunction helloWorld() {\n\tconsole.log(\"Hello, World!\");\n}"],
-    "python": [71, "py", "\# Default Python code\ndef hello_world():\n\tprint(\"Hello, World!\")\n\nhello_world()"],
-    "cpp": [54, "cpp", "\/\/ Default C++ code\n#include <iostream>\nusing namespace std\;\n\nint main() \{\n\tcout << \"Hello, World!\"\;\n\treturn 0\;\n}"],
     "c": [50, "c", "\/\/ Default C code\n#include <stdio.h>\n\nint main() {\n\tprintf(\"Hello, World!\");\n\treturn 0;\n}"],
     "csharp": [51, "cs", "\/\/ Default C# code\nusing System;\n\nnamespace HelloWorld {\n\tclass Program {\n\t\tstatic void Main(string[] args) {\n\t\t\tConsole.WriteLine(\"Hello, World!\");\n\t\t}\n\t}\n}"],
-    "rust": [73, "rs", "\/\/ Default Rust code\nfn main() {\n\tprintln!(\"Hello, World!\");\n}"],
+    "cpp": [54, "cpp", "\/\/ Default C++ code\n#include <iostream>\nusing namespace std\;\n\nint main() \{\n\tcout << \"Hello, World!\"\;\n\treturn 0\;\n}"],
+    "java": [62, "java", "\/\/ Default Java code\npublic class Main {\n\tpublic static void main(String[] args) {\n\t\tSystem.out.println(\"Hello, World!\");\n\t}\n}"],
+    "javascript": [63, "js", "\/\/ Default JavaScript code\nfunction helloWorld() {\n\tconsole.log(\"Hello, World!\");\n}"],
     "kotlin": [78, "kt", "\/\/ Default Kotlin code\nfun main(args: Array<String>) {\n\tprintln(\"Hello, World!\")\n}"],
+    "python": [71, "py", "\# Default Python code\ndef hello_world():\n\tprint(\"Hello, World!\")\n\nhello_world()"],
+    "rust": [73, "rs", "\/\/ Default Rust code\nfn main() {\n\tprintln!(\"Hello, World!\");\n}"],
 };
 
 require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.0/min/vs' } });
@@ -91,7 +123,7 @@ require(["vs/editor/editor.main"], function () {
     else if (localStorage.getItem("theme") === "dark") editor.updateOptions({ theme: "vs-dark" });
 });
 
-const backendURL = "https://codepad-sd7b.onrender.com"; // Your backend URL
+const backendURL = "https://codepad-sd7b.onrender.com";
 
 async function runCode() {
     const code = editor.getValue();
@@ -195,12 +227,13 @@ function resetCode() {
 
 function toggleTheme() {
     let theme = localStorage.getItem("theme");
+    const root = document.documentElement;
 
     if (theme === "light") {
         localStorage.setItem("theme", "dark"); // commit to memory
-        document.body.classList.add("dark-mode");
-        document.body.classList.remove("light-mode");
-        document.querySelectorAll("body *").forEach(e => {
+        root.classList.add("dark-mode");
+        root.classList.remove("light-mode");
+        document.querySelectorAll("html *").forEach(e => {
             e.classList.add("dark-mode");
             e.classList.remove("light-mode");
         });
@@ -208,9 +241,9 @@ function toggleTheme() {
     }
     else if (theme === "dark") {
         localStorage.setItem("theme", "light"); // commit to memory
-        document.body.classList.remove("dark-mode");
-        document.body.classList.add("light-mode");
-        document.querySelectorAll("body *").forEach(e => {
+        root.classList.remove("dark-mode");
+        root.classList.add("light-mode");
+        document.querySelectorAll("html *").forEach(e => {
             e.classList.remove("dark-mode");
             e.classList.add("light-mode");
         });
